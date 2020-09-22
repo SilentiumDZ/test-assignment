@@ -1,0 +1,1 @@
+export const CALCULATOR_SERVICE = Symbol('CALCULATOR_SERVICE');
