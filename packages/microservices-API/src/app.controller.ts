@@ -2,7 +2,7 @@ import { Body, Controller, Inject, Post, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { InCalculatorDTO } from './dto/in/in.calculator.dto';
-import { InLoginDTO } from './dto/in/in.login.dto';
+import { InUserDataDTO } from './dto/in/in.user-data.dto';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { HeadersAccessToken } from './decorator/acess-token.decorator';
 
@@ -14,7 +14,7 @@ export class AppController {
 
   @Post('auth/login')
   async login(
-    @Body() body: InLoginDTO,
+    @Body() body: InUserDataDTO,
   ) {
     return this.appService.login(body.username, body.password);
   }

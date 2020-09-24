@@ -1,16 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, Min, Max } from 'class-validator';
 
-export class InLoginDTO {
+export class InUserDataDTO {
   @IsString()
   @ApiProperty()
-  @Min(5)
+  @Min(6)
   @Max(20)
   username: string;
 
   @IsString()
   @ApiProperty()
-  @Min(5)
+  @Min(6)
   @Max(20)
   password: string;
 }

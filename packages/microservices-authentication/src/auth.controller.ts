@@ -1,6 +1,7 @@
 import { Controller, Inject} from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
+import { InUserDataDTO } from './dto/in/in.user-data.dto';
 
 @Controller()
 export class AuthController {
@@ -9,7 +10,7 @@ export class AuthController {
   private readonly authService: AuthService;
 
   @MessagePattern({ cmd: 'login' })
-  multiplication(payload: string[]) {
-    return  this.authService.login(payload[0], payload[1]);
+  login(userData: InUserDataDTO) {
+    return this.authService.login(userData.username, userData.password);
   }
 }
