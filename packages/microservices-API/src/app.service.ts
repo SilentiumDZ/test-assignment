@@ -1,45 +1,65 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { CALCULATOR_SERVICE } from './const/calculator.const';
+import { AUTHORIZATION_SERVICE } from './const/authorization.const';
+import { LOG_SERVICE } from './const/log.const';
 
 @Injectable()
 export class AppService {
-  constructor(@Inject(CALCULATOR_SERVICE) private readonly calculatorService: ClientProxy) { }
+  @Inject(CALCULATOR_SERVICE)
+  private readonly calculatorService: ClientProxy;
 
-  async onApplicationBootstrap() {
-    await this.calculatorService.connect();
-  }
+  @Inject(AUTHORIZATION_SERVICE)
+  private readonly authorizationService: ClientProxy;
 
-  async addVal(a: number, b: number): Promise<number> {
+  @Inject(LOG_SERVICE)
+  private readonly logService: ClientProxy;
+
+  private readonly logPattern = { cmd: 'log' };
+
+  async addVal(a: number, b: number, token: string | undefined): Promise<number> {
     const pattern = { cmd: 'add' };
     const payload = [ a, b ];
     const res = await this.calculatorService.send<number>(pattern, payload).toPromise();
-    this.calculatorService.send('log', '');
+
+    const logData = {token, operation: 'addition', inputA: a, inputB: b, result: res};
+    await this.logService.send(this.logPattern, logData).toPromise();
     return res;
   }
 
-  async subVal(a: number, b: number): Promise<number> {
+  async subVal(a: number, b: number, token: string | undefined): Promise<number> {
     const pattern = { cmd: 'sub' };
     const payload = [ a, b ];
     const res = await this.calculatorService.send<number>(pattern, payload).toPromise();
-    this.calculatorService.send('log', '');
+
+    const logData = {token, operation: 'subtraction', inputA: a, inputB: b, result: res};
+    this.logService.emit(this.logPattern, logData);
     return res;
   }
 
-  async mulVal(a: number, b: number): Promise<number> {
+  async mulVal(a: number, b: number, token: string | undefined): Promise<number> {
     const pattern = { cmd: 'mul' };
     const payload = [ a, b ];
     const res = await this.calculatorService.send<number>(pattern, payload).toPromise();
-    this.calculatorService.send('log', '');
+
+    const logData = {token, operation: 'multiplication', inputA: a, inputB: b, result: res};
+    this.logService.emit(this.logPattern, logData);
     return res;
   }
 
-  async divVal(a: number, b: number): Promise<number> {
+  async divVal(a: number, b: number, token: string | undefined): Promise<number> {
     const pattern = { cmd: 'div' };
     const payload = [ a, b ];
     const res = await this.calculatorService.send<number>(pattern, payload).toPromise();
-    this.calculatorService.send('log', '');
+
+    const logData = {token, operation: 'division', inputA: a, inputB: b, result: res};
+    this.logService.emit(this.logPattern, logData);
     return res;
+  }
+
+  async login(username: string, password: string) {
+    const pattern = { cmd: 'login' };
+    const payload = [ username, password ];
+    return this.authorizationService.send(pattern, payload);
   }
 }

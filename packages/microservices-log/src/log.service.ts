@@ -1,21 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { createObjectCsvWriter as createCsvWriter } from 'csv-writer';
+import { InLogDTO } from './dto/in.log.dto';
 
 @Injectable()
 export class LogService {
-  async logToCsv(data) {
+  async logToCsv(logData: InLogDTO) {
     const csvWriter = createCsvWriter({
-      path: 'path/to/file.csv',
+      path: 'log.csv',
       header: [
         {id: 'token', title: 'TOKEN'},
         {id: 'operation', title: 'OPERATION'},
-        {id: 'input', title: 'INPUT'},
+        {id: 'inputA', title: 'INPUT_A'},
+        {id: 'inputB', title: 'INPUT_B'},
         {id: 'result', title: 'RESULT'},
       ],
     });
 
     const records = [
-      { token: data,  operation: data, input: data, result: data },
+      { token: logData.token,  operation: logData.operation, inputA: logData.inputA, inputB: logData.inputB, result: logData.result },
     ];
 
     await csvWriter.writeRecords(records);

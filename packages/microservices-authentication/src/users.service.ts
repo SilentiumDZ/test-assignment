@@ -34,9 +34,7 @@ export class UsersService {
     try {
       const rawData = fs.readFileSync(this.usersFilePath);
       users.push(...JSON.parse(rawData.toString()) as User[]);
-    } catch (error) {
-      throw new Error('Error reading users from file');
-    }
+    } catch (error) { }
 
     return users;
   }
