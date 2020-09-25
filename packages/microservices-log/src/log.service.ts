@@ -14,6 +14,7 @@ export class LogService {
         {id: 'inputB', title: 'INPUT_B'},
         {id: 'result', title: 'RESULT'},
       ],
+      append: true,
     });
 
     const records = [
